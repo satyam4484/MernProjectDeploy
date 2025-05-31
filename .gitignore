@@ -18,5 +18,5 @@ client/*.njsproj
 server/*.njsproj
 client/*.sln
 
-client/.env.dev
+client/.env
 server/.env
