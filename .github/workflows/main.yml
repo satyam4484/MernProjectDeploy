@@ -1,0 +1,62 @@
+name: Deploy Fullstack App on EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    strategy:
+      matrix:
+        node-version: [22.x]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'yarn'
+
+      # ------------------------------
+      # BACKEND SETUP
+      # ------------------------------
+      - name: Install backend dependencies
+        working-directory: ./server
+        run: yarn install
+
+      - name: Create backend .env file
+        working-directory: ./server
+        run: |
+          echo "${{ secrets.PROD_BACKEND_ENV }}" > .env
+
+      - name: Start backend with PM2
+        working-directory: ./server
+        run: |
+          pm2 restart backend || pm2 start index.js --name backend
+
+      # ------------------------------
+      # FRONTEND SETUP
+      # ------------------------------
+      - name: Install frontend dependencies
+        working-directory: ./client
+        run: yarn install
+
+      - name: Create frontend .env file
+        working-directory: ./client
+        run: |
+          echo "${{ secrets.PROD_FRONTEND_ENV }}" > .env
+
+      - name: Build frontend
+        working-directory: ./client
+        run: yarn build
+
+      - name: Deploy frontend to Nginx
+        run: |
+          sudo rm -rf /var/www/html/*
+          sudo cp -r ./client/build/* /var/www/html/
