@@ -21,17 +21,14 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'yarn'
-
-      - name: Install Yarn
-        run: npm install -g yarn
+          cache: 'npm'
 
       # ------------------------------
       # BACKEND SETUP
       # ------------------------------
       - name: Install backend dependencies
         working-directory: ./server
-        run: yarn install
+        run: npm install
 
       - name: Create backend .env file
         working-directory: ./server
@@ -48,7 +45,7 @@ jobs:
       # ------------------------------
       - name: Install frontend dependencies
         working-directory: ./client
-        run: yarn install
+        run: npm install
 
       - name: Create frontend .env file
         working-directory: ./client
@@ -57,7 +54,7 @@ jobs:
 
       - name: Build frontend
         working-directory: ./client
-        run: yarn build
+        run: npm run build
 
       - name: Deploy frontend to Nginx
         run: |
