@@ -36,6 +36,7 @@ jobs:
       - name: Create backend .env file
         working-directory: ./server
         run: |
+          touch .env
           echo "${{ secrets.PROD_BACKEND_ENV }}" > .env
 
       - name: Start backend with PM2
@@ -53,6 +54,7 @@ jobs:
       - name: Create frontend .env file
         working-directory: ./client
         run: |
+          touch .env
           echo "${{ secrets.PROD_FRONTEND_ENV }}" > .env
 
       - name: Build frontend
