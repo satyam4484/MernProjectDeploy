@@ -16,13 +16,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 
-app.get('/health', (req, res) => {
-    res.status(200).json({ status: 'OK', Message: 'Server is running' });
-}
-);
-
 app.get('/api/get', (req, res) => {
     res.status(200).json({ message: 'GET request successful' });
+});
+app.get('/api/health', (req, res) => {
+    res.status(200).json({ status: 'OK', Message: 'Server is running' });
 });
 
 
